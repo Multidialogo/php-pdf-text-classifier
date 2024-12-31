@@ -5,6 +5,16 @@ namespace Multidialogo\PdfTextClassifier;
 
 use Smalot\PdfParser\Parser;
 
+/**
+ * TODO:
+ *
+ * Error Handling: Add try-catch blocks around file parsing and element extraction to manage exceptions gracefully.
+ * Encoding and Special Characters: Ensure text encoding is handled correctly, especially for multilingual or special character content.
+ * Improved Table Detection: If the document contains complex tables, consider implementing grid detection using bounding boxes or external libraries.
+ * Memory Efficiency: Large PDFs may consume significant memory. Optimizations like streaming or chunk-based processing might help.
+ * Extensibility: Allow configuration for font-size thresholds and table detection parameters.
+ */
+
 class DocumentStructureExtractor
 {
     private const int MIN_SIZE_FOR_TITLE = 14;
