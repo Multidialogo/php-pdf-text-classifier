@@ -47,7 +47,6 @@ class TrainDocumentModelCommand extends Command
         // Initialize the question helper to prompt the user
         $questionHelper = $this->getHelper('question');
 
-        $structuredPages = [];
         $labels = [];
 
         // Loop to input multiple documents
@@ -63,23 +62,22 @@ class TrainDocumentModelCommand extends Command
             $question = new Question('Enter the classification of the document: ');
             $classification = $questionHelper->ask($input, $output, $question);
 
-            $structuredPages[] = DocumentStructureExtractor::getStructuredPages($filePath);
-
-            // Ask if user wants to override the model
-            $question = new Question('Do you want to override the model? (y/n): ', 'n');
-            $overrideAnswer = $questionHelper->ask($input, $output, $question);
-            $mode = ($overrideAnswer === 'y') ? DocumentModelTrainer::OVERRIDE_MODE : DocumentModelTrainer::MERGE_MODE;
-
             // Ask for the label (you can modify this based on your model's needs)
             $question = new Question('Enter the label for this document: ');
             $label = $questionHelper->ask($input, $output, $question);
             $labels[] = $label;
 
+            // Ask for the label (you can modify this based on your model's needs)
+            $question = new Question('Enter the 2nd label for this document: ');
+            $label = $questionHelper->ask($input, $output, $question);
+            $labels[] = $label;
+
+            $trainer->train(DocumentStructureExtractor::getStructuredPages($filePath), $labels, DocumentModelTrainer::MERGE_MODE);
+
             $output->writeln("Document added: Classification - {$classification}");
         }
 
         // Now train the model with the gathered data
-        $trainer->train($structuredPages, $labels, $mode);
 
         $output->writeln('<info>Model training complete!</info>');
 

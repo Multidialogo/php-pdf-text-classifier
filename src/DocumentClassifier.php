@@ -4,10 +4,6 @@ namespace Multidialogo\PdfTextClassifier;
 
 use InvalidArgumentException;
 
-use Phpml\FeatureExtraction\TfIdfTransformer;
-use Phpml\FeatureExtraction\TokenCountVectorizer;
-use Phpml\Classification\KNearestNeighbors;
-
 class DocumentClassifier
 {
     private Model $model;
@@ -52,7 +48,7 @@ class DocumentClassifier
         // Apply TF-IDF transformation
         $this->model->getTransformer()->transform($texts);
 
-        // Return the predictions (titles and summaries)
+        // Return the predictions
         return $this->model->getClassifier()->predict($texts);
     }
 }
