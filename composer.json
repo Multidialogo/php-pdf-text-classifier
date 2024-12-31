@@ -3,7 +3,7 @@
   "type": "library",
   "description": "A simple pdf text classifier",
   "keywords": ["pdf", "text", "classifier"],
-  "homepage": "https://github.com/zio-mitch/php-pdf-text-classifier",
+  "homepage": "https://github.com/Multidialogo/php-pdf-text-classifier",
   "license": "MIT",
   "authors": [
     {
