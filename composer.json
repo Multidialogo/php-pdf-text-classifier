@@ -16,15 +16,13 @@
     "Smalot\\PdfParser\\Parser": "^2.11"
   },
   "require-dev": {
-
-  },
-  "provide": {
-    "psr/log-implementation": "1.0|2.0|3.0"
+    "phpunit/phpunit": "^10.0",
+    "phpunit/phpunit-prophecy": "^3.0"
   },
   "autoload": {
-    "psr-4": { "Multidialogo\\PdfTextClassifier\\": "" },
+    "psr-4": { "Multidialogo\\PdfTextClassifier\\": "src" },
     "exclude-from-classmap": [
-      "/Tests/"
+      "/src/Tests/"
     ]
   },
   "minimum-stability": "dev"

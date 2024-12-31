@@ -11,7 +11,7 @@ class DocumentStructureExtractor
 
     private const int MAX_SIZE_FOR_NOTE = 10;
 
-    public static function extractStructuredPages($filePath): array
+    public static function getStructuredPages($filePath): array
     {
         // Initialize the PDF parser
         $parser = new Parser();
