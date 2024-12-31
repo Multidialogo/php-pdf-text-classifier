@@ -3,6 +3,8 @@
 namespace Multidialogo\PdfTextClassifier;
 
 use InvalidArgumentException;
+
+use Phpml\ModelManager;
 use Phpml\FeatureExtraction\TfIdfTransformer;
 use Phpml\FeatureExtraction\TokenCountVectorizer;
 use Phpml\Tokenization\WhitespaceTokenizer;
@@ -50,7 +52,13 @@ class DocumentModelTrainer
      */
     public function train(array $structuredPages, array $labels, bool $mode = self::OVERRIDE_MODE)
     {
-        $modelFileName = "{$this->resourcesPath}/{$this->modelFilePath}.json";
+        $modelFilePath = "{$this->resourcesPath}/{$this->modelFilePath}.json";
+
+        $modelManager = new ModelManager();
+
+        if (self::MERGE_MODE === $mode) {
+            $this->classifier = $modelManager->restoreFromFile($modelFilePath);
+        }
 
         $texts = [];
         $collectionSize = count($structuredPages);
@@ -74,20 +82,6 @@ class DocumentModelTrainer
         // Train the classifier
         $this->classifier->train($texts, $labels);
 
-        // Save the model to a JSON file
-        $modelData = [
-            'vectorizer' => $this->vectorizer,
-            'transformer' => $this->transformer,
-            'classifier' => $this->classifier
-        ];
-
-        if (self::MERGE_MODE === $mode) {
-            $modelData = array_merge(
-                $modelData,
-                ModelProvider::loadModelData($modelFileName)
-            );
-        }
-
-        file_put_contents($modelFileName, json_encode($modelData));
+        $modelManager->saveToFile($this->classifier, $modelFilePath);
     }
 }

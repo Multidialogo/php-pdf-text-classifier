@@ -3,10 +3,11 @@
 namespace Multidialogo\PdfTextClassifier;
 
 use InvalidArgumentException;
+use Phpml\ModelManager;
 
 class DocumentClassifier
 {
-    private Model $model;
+    private KNearestNeighbors $classifier;
 
     private TextProcessor $textProcessor;
 
@@ -17,13 +18,9 @@ class DocumentClassifier
             throw new InvalidArgumentException("Missing model file {$modelFilePath}");
         }
 
-        // Load the saved model from the JSON file
-        if (!$this->model = ModelProvider::loadModel($modelFilePath)) {
-            throw new InvalidArgumentException("Missing model file {$modelFilePath}");
-        }
+        $this->classifier = (new ModelManager())->restoreFromFile($modelFilePath);
 
         $this->textProcessor = new TextProcessor("{$resourcesPath}/{$lang}");
-
     }
 
     public function classify(array $structuredPages)
@@ -43,12 +40,12 @@ class DocumentClassifier
         }
 
         // Vectorize the text
-        $this->model->getVectorizer()->transform($texts);
+        $this->classifier->getVectorizer()->transform($texts);
 
         // Apply TF-IDF transformation
-        $this->model->getTransformer()->transform($texts);
+        $this->classifier->getTransformer()->transform($texts);
 
         // Return the predictions
-        return $this->model->getClassifier()->predict($texts);
+        return $this->classifier->getClassifier()->predict($texts);
     }
 }
