@@ -75,19 +75,19 @@ class DocumentModelTrainer
         $this->classifier->train($texts, $labels);
 
         // Save the model to a JSON file
-        $model = [
+        $modelData = [
             'vectorizer' => $this->vectorizer,
             'transformer' => $this->transformer,
             'classifier' => $this->classifier
         ];
 
         if (self::MERGE_MODE === $mode) {
-            $model = array_merge(
-                $model,
-                ModelProvider::loadModel($modelFileName)
+            $modelData = array_merge(
+                $modelData,
+                ModelProvider::loadModelData($modelFileName)
             );
         }
 
-        file_put_contents($modelFileName, json_encode($model));
+        file_put_contents($modelFileName, json_encode($modelData));
     }
 }

@@ -10,11 +10,7 @@ use Phpml\Classification\KNearestNeighbors;
 
 class DocumentClassifier
 {
-    private TokenCountVectorizer $vectorizer;
-
-    private TfIdfTransformer $transformer;
-
-    private KNearestNeighbors $classifier;
+    private Model $model;
 
     private TextProcessor $textProcessor;
 
@@ -26,16 +22,9 @@ class DocumentClassifier
         }
 
         // Load the saved model from the JSON file
-        $modelData = json_decode(file_get_contents($modelFilePath), true);
-
-        if (!$modelData) {
-            throw new InvalidArgumentException("Invalid model file format.");
+        if (!$this->model = ModelProvider::loadModel($modelFilePath)) {
+            throw new InvalidArgumentException("Missing model file {$modelFilePath}");
         }
-
-        // Load the components from the saved model
-        $this->vectorizer = $modelData['vectorizer'];
-        $this->transformer = $modelData['transformer'];
-        $this->classifier = $modelData['classifier'];
 
         $this->textProcessor = new TextProcessor("{$resourcesPath}/{$lang}");
 
@@ -58,12 +47,12 @@ class DocumentClassifier
         }
 
         // Vectorize the text
-        $this->vectorizer->transform($texts);
+        $this->model->getVectorizer()->transform($texts);
 
         // Apply TF-IDF transformation
-        $this->transformer->transform($texts);
+        $this->model->getTransformer()->transform($texts);
 
         // Return the predictions (titles and summaries)
-        return $this->classifier->predict($texts);
+        return $this->model->getClassifier()->predict($texts);
     }
 }
